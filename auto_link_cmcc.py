@@ -124,7 +124,7 @@ def auth(params, jsessionid):
     redirect_location = r.headers['Location']
     if redirect_location.find('fail') != -1:
         is_login = False
-        print('(づ￣3￣)づ╭❤～ 认证失败啦!\n tip: 1. 请检查用户名和密码是否正确 2. 关闭此脚本前请先输入数字2退出认证 3. 请重启无线网卡后重试')
+        print('(づ￣3￣)づ╭❤～ 认证失败啦!\n tip: 1. 请检查用户名和密码是否正确 2. 关闭此脚本前请先输入数字「2」退出认证 3. 请重启无线网卡后重试')
     else:
         is_login = True
         print('O(∩_∩)O~~ 认证成功！')
@@ -184,24 +184,29 @@ def main():
         if is_login:
             break
         time.sleep(2)
+        print('第{0}次重试...'.format(try_num + 1))
         auth(params, jsessionid)
         try_num += 1
-    print('^_^ 输入数字「2」以注销本账户网络认证:')
-    while True:
-        num = input()
-        logout(params, jsessionid)
-        if num == 1:
-            # 注销登录
+    if is_login:
+        print('^_^ 输入数字「2」以注销本账户网络认证:')
+        while True:
+            num = input()
             logout(params, jsessionid)
-            # 注销失败后进行多次注销尝试
-            if is_login == True:
-                try_num = 0
-                while try_num < MAX_TRY_COUNT:
-                    if is_login == False:
-                        break
-                    time.sleep(2)
-                    logout(params, jsessionid)
-                    try_num += 1
+            if num == 1:
+                # 注销登录
+                logout(params, jsessionid)
+                # 注销失败后进行多次注销尝试
+                if is_login == True:
+                    try_num = 0
+                    while try_num < MAX_TRY_COUNT:
+                        if is_login == False:
+                            break
+                        time.sleep(2)
+                        logout(params, jsessionid)
+                        print('第{0}次重试...'.format(try_num + 1))
+                        try_num += 1
+    else:
+        raise AttributeError('认证失败！程序退出')
 
 
 if __name__ == '__main__':
