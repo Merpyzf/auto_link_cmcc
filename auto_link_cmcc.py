@@ -15,9 +15,9 @@ import requests
 user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0'
 host = 'wlan.jsyd139.com'
 # 手机号码
-username = '输入你的手机号码'
+username = '15850629053'
 # 静态密码
-pwd = '输入你的静态密码'
+pwd = 'SFC5jrk9'
 is_login = False
 
 
@@ -25,7 +25,7 @@ def get_local_address():
     hostname = socket.getfqdn(socket.gethostname())
     ip_address = socket.gethostbyname(hostname)
     if ip_address == '127.0.0.1':
-        raise AttributeError('程序结束！使用此脚本前请先连接到CMCC-EDU热点')
+        raise AttributeError('使用此脚本前请先连接到CMCC-EDU热点， 脚本停止运行~')
     return ip_address
 
 
@@ -124,10 +124,10 @@ def auth(params, jsessionid):
     redirect_location = r.headers['Location']
     if redirect_location.find('fail') != -1:
         is_login = False
-        print('认证失败！请按照正常步骤使用此脚本，或关闭wifi后再次使用本脚本登录！')
+        print('(づ￣3￣)づ╭❤～ 认证失败啦!\n tip: 1. 请检查用户名和密码是否正确 2. 关闭此脚本前请先输入数字2退出认证 3. 请重启无线网卡后重试')
     else:
         is_login = True
-        print('认证成功！')
+        print('O(∩_∩)O~~ 认证成功！')
 
 
 def logout(params, jsessionid):
@@ -150,7 +150,6 @@ def logout(params, jsessionid):
         'User-Agent': user_agent
     }
     param_encode = unquote(params[0], 'utf-8')
-    print('离线:')
     data = {
         'bOffline': 'true',
         'paramStr': param_encode,
@@ -160,12 +159,13 @@ def logout(params, jsessionid):
     r = requests.post(logout_url, data=data, cookies=cookies, headers=headers)
     logout_html = r.text
     success = logout_html.find('下线成功')
+    print(success)
     if success != -1:
-        print('下线成功！')
+        print('^_^ 下线成功！')
         exit(0)
         is_login = False
     else:
-        print('下线失败！')
+        print('%>_<% 下线失败！')
         is_login = True
 
 
@@ -186,7 +186,7 @@ def main():
         time.sleep(2)
         auth(params, jsessionid)
         try_num += 1
-    print('从键盘上键入数字2以注销本账号登录: ')
+    print('^_^ 输入数字「2」以注销本账户网络认证:')
     while True:
         num = input()
         logout(params, jsessionid)
